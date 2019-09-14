@@ -12,11 +12,16 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
 @RestController
 class EstudianteControlador  {
+
     private final EstudianteRepositorio repositorio;
 
-    public EstudianteControlador(EstudianteRepositorio repositorio) {
+    private final  EnsambladorDeRecursosDeEstudiante ensamblador;
+
+    public EstudianteControlador(EstudianteRepositorio repositorio, EnsambladorDeRecursosDeEstudiante ensamblador) {
         this.repositorio = repositorio;
+        this.ensamblador = ensamblador;
     }
+
 /*
     @GetMapping("/estudiantes")
     List<Estudiante> todo(){
@@ -43,7 +48,7 @@ class EstudianteControlador  {
         return repositorio.findById(id).orElseThrow(()-> new  ExcepcionEstudiantenoEncontrado(id));
     }
 */
-    @GetMapping("/estudiante/{id}")
+/*    @GetMapping("/estudiante/{id}")
     Resource<Estudiante> uno(@PathVariable Long id){
         Estudiante estudiante=repositorio.findById(id)
                 .orElseThrow(()-> new ExcepcionEstudiantenoEncontrado(id));
@@ -52,6 +57,17 @@ class EstudianteControlador  {
                 linkTo(methodOn(EstudianteControlador.class).todo()).withRel("estudiantes")
         );
     }
+    */
+
+    @GetMapping("/estudiante/{id}")
+    Resource<Estudiante> uno(@PathVariable Long id){
+
+        Estudiante estudiante=repositorio.findById(id)
+                .orElseThrow(()->new ExcepcionEstudiantenoEncontrado(id));
+        return ensamblador.toResource(estudiante);
+    }
+
+
 
 
 
