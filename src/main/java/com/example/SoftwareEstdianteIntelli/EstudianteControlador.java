@@ -2,8 +2,11 @@ package com.example.SoftwareEstdianteIntelli;
 
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,14 +47,21 @@ class EstudianteControlador  {
         List<Resource<Estudiante>> estudiante=repositorio.findAll().stream()
                 .map(ensamblador::toResource).collect(Collectors.toList());
         return new Resources<>(
-                estudiante,linkTo(methodOn(EstudianteControlador.class).todo()).withSelfRel();
+                estudiante,linkTo(methodOn(EstudianteControlador.class).todo()).withSelfRel());
 
 
     }
-
+/*
     @PostMapping("/estudiantes")
     Estudiante nuevoEstudiante(@RequestBody Estudiante estudiante){
         return repositorio.save(estudiante);
+    }*/
+
+    @PutMapping("/estudiantes")
+    ResponseEntity<?> nuevoEstudiante(@RequestBody Estudiante nuevoEstudiante) throws URISyntaxException{
+
+        Resource<Estudiante> recurso=ensamblador.toResource(repositorio.save(nuevoEstudiante));
+        return ResponseEntity.created(new URI(recurso.getId().expand().getHref())).body(recurso);
     }
 /*
     @GetMapping("/estudiante/{id}")
