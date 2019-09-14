@@ -28,7 +28,7 @@ class EstudianteControlador  {
         return  repositorio.findAll();
     }
 */
-    @GetMapping("/estudiantes")
+/*    @GetMapping("/estudiantes")
     Resources<Resource<Estudiante>> todo(){
         List<Resource<Estudiante>> estudiantes=repositorio.findAll().stream()
                 .map(estudiante ->new Resource<>(estudiante,
@@ -36,6 +36,17 @@ class EstudianteControlador  {
                         linkTo(methodOn(EstudianteControlador.class).todo()).withRel("estudiantes")))
                 .collect(Collectors.toList());
         return  new Resources<>(estudiantes,linkTo(methodOn(EstudianteControlador.class)).withSelfRel());
+    }
+*/
+    @GetMapping("/estudiantes")
+    Resources<Resource<Estudiante>> todo(){
+
+        List<Resource<Estudiante>> estudiante=repositorio.findAll().stream()
+                .map(ensamblador::toResource).collect(Collectors.toList());
+        return new Resources<>(
+                estudiante,linkTo(methodOn(EstudianteControlador.class).todo()).withSelfRel();
+
+
     }
 
     @PostMapping("/estudiantes")
