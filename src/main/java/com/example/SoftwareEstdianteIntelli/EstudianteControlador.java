@@ -57,7 +57,7 @@ class EstudianteControlador  {
         return repositorio.save(estudiante);
     }*/
 
-    @PutMapping("/estudiantes")
+    @PostMapping("/estudiantes")
     ResponseEntity<?> nuevoEstudiante(@RequestBody Estudiante nuevoEstudiante) throws URISyntaxException{
 
         Resource<Estudiante> recurso=ensamblador.toResource(repositorio.save(nuevoEstudiante));
