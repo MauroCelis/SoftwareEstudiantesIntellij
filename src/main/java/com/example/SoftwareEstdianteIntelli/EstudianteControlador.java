@@ -91,7 +91,7 @@ class EstudianteControlador  {
 
 
 
-
+/*
     @PutMapping("/estudiante/{id}")
     Estudiante reemplazarEstudiante(@RequestBody Estudiante nuevoEstudiante, @PathVariable Long id)
     {
@@ -104,10 +104,37 @@ class EstudianteControlador  {
             nuevoEstudiante.setId(id);
             return repositorio.save(nuevoEstudiante);
         });
+
+        Resource<Estudiante> recurso=ensamblador.toResource()
+    }*/
+    @PutMapping("/estudiante/{id}")
+    ResponseEntity<?> reemplazarEstudiante(@RequestBody Estudiante nuevoEstudiante, @PathVariable Long id) throws URISyntaxException {
+        Estudiante estudianterCambiado=repositorio.findById(id)
+                .map(estudiante -> {
+                    estudiante.setNombre(nuevoEstudiante.getNombre());
+                    estudiante.setApellido(nuevoEstudiante.getApellido());
+                    estudiante.setNota(nuevoEstudiante.getNota());
+                    return repositorio.save(estudiante);
+                }).orElseGet(()->{
+            nuevoEstudiante.setId(id);
+            return repositorio.save(nuevoEstudiante);
+        });
+
+        Resource<Estudiante> recurso=ensamblador.toResource(estudianterCambiado);
+
+        return ResponseEntity.created(new URI(recurso.getId().expand().getHref())).body(recurso);
     }
 
+    /*
     @DeleteMapping("/estudiantes/{id}")
     void borrarEstudiante(@PathVariable Long id){
         repositorio.deleteById(id);
+    }
+    */
+    @DeleteMapping("estudiantes/{id}")
+    ResponseEntity<?> borrarEstudiante(@PathVariable Long id){
+        repositorio.deleteById(id);
+
+        return ResponseEntity.noContent().build();
     }
 }
